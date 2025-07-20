@@ -36,7 +36,7 @@ User ──▶ Streamlit (Cloud Run) ──▶ FastAPI (Cloud Run) ──▶ ML 
 
 **Quick Start:**
 - Visit the [Live Streamlit App](https://pm-streamlit-29369688553.us-central1.run.app/)
-- For local development or redeployment, see the full [/GCP_DEPLOYMENT.md]
+- For local development or redeployment, see the full GCP_DEPLOYMENT.md
 
 **Main Steps:**
 1. Write Dockerfiles for both FastAPI and Streamlit
