@@ -4,7 +4,7 @@ Anticipate industrial machine failures before they happen! This project uses mac
 
 ---
 
-##  Project Overview
+## 🚀 Project Overview
 
 - **Binary Classification:** Predict if a machine will fail.
 - **Multiclass Classification:** Identify the cause of failure (e.g., Overstrain, Power, Tool Wear, Heat Dissipation, Random).
@@ -13,7 +13,7 @@ Anticipate industrial machine failures before they happen! This project uses mac
 
 ---
 
-##  Dataset
+## 📦 Dataset
 - **10,000 samples** with 14 features: sensor readings, operational settings, and failure indicators.
 - **Failure Modes:**
   - Tool Wear Failure (TWF)
@@ -24,7 +24,7 @@ Anticipate industrial machine failures before they happen! This project uses mac
 
 ---
 
-##  Features
+## 🖥️ Features
 - **EDA:** Visualize distributions, outliers, and correlations.
 - **Model Metrics:** Compare classifiers (Random Forest, SVC, etc.) for both tasks.
 - **Prediction:** Input sensor data and get real-time failure predictions and root cause.
@@ -32,7 +32,7 @@ Anticipate industrial machine failures before they happen! This project uses mac
 
 ---
 
-##  Setup & Installation
+## 🏗️ Setup & Installation
 
 ### 1. Clone the repository
 ```bash
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 ---
 
-##  Docker Deployment
+## 🐳 Docker Deployment
 
 Build and run everything (Streamlit + FastAPI) in one container:
 
@@ -93,7 +93,7 @@ docker run -p 8501:8501 -p 8000:8000 predictive-maintenance
 
 ---
 
-##  Dashboard Pages
+## 📊 Dashboard Pages
 - **Home:** Project intro, dataset, and failure mode explanations.
 - **EDA:** Data exploration, outlier detection, and feature analysis.
 - **Metrics:** Model performance comparison and classification reports.
@@ -101,16 +101,16 @@ docker run -p 8501:8501 -p 8000:8000 predictive-maintenance
 
 ---
 
-##  Configuration
+## ⚙️ Configuration
 - Streamlit settings: see `.streamlit/config.toml` (runs headless on port 8501).
 - No authentication or API keys required for local use.
 
 ---
 
-##  Notebooks
+## 📁 Notebooks
 - See `notebooks/` for data preprocessing, EDA, and model training workflows.
 
 ---
 
-##  License
-MIT License (add your own if needed)
+## 📝 License
+MIT License (add your own if needed) 
