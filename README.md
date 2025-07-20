@@ -1,116 +1,102 @@
-# 🛠️ Predictive Maintenance Dashboard
+# Predictive Maintenance ML App (GCP Deployed)
 
-Anticipate industrial machine failures before they happen! This project uses machine learning to predict both the occurrence and type of machine failures, helping reduce downtime, improve safety, and optimize maintenance schedules.
+[![Live Demo](https://img.shields.io/badge/Live%20App-Streamlit-green)](https://pm-streamlit-29369688553.us-central1.run.app/)
 
----
-
-## 🚀 Project Overview
-
-- **Binary Classification:** Predict if a machine will fail.
-- **Multiclass Classification:** Identify the cause of failure (e.g., Overstrain, Power, Tool Wear, Heat Dissipation, Random).
-- **Interactive Dashboard:** Explore data, visualize metrics, and make predictions via a Streamlit web app.
-- **REST API:** FastAPI backend for programmatic predictions.
+## 🚀 Live Demo
+**Try the app here:** [https://pm-streamlit-29369688553.us-central1.run.app/](https://pm-streamlit-29369688553.us-central1.run.app/)
 
 ---
 
-## 📦 Dataset
-- **10,000 samples** with 14 features: sensor readings, operational settings, and failure indicators.
-- **Failure Modes:**
-  - Tool Wear Failure (TWF)
-  - Heat Dissipation Failure (HDF)
-  - Power Failure (PWF)
-  - Overstrain Failure (OSF)
-  - Random Failure (RNF)
+## 📝 Project Overview
+This project is an end-to-end machine learning solution for predictive maintenance. It predicts machine failures and identifies their root causes using real-world sensor data. The app is fully containerized and deployed on Google Cloud Platform (GCP) using Cloud Run for both the backend and frontend.
+
+**Key Features:**
+- **Interactive Streamlit dashboard** for data exploration, model evaluation, and live predictions
+- **FastAPI backend** serving ML predictions via a REST API
+- **Cloud-native deployment**: Both services run as independent, scalable Cloud Run services
+- **Easy integration**: The frontend calls the backend via public HTTPS endpoints
 
 ---
 
-## 🖥️ Features
-- **EDA:** Visualize distributions, outliers, and correlations.
-- **Model Metrics:** Compare classifiers (Random Forest, SVC, etc.) for both tasks.
-- **Prediction:** Input sensor data and get real-time failure predictions and root cause.
-- **API:** `/predict` endpoint for programmatic access.
+## 🏗️ Architecture
 
----
+- **Frontend:** Streamlit app ([Live URL](https://pm-streamlit-29369688553.us-central1.run.app/))
+- **Backend:** FastAPI app (deployed on Cloud Run, private URL)
+- **Communication:** Streamlit sends prediction requests to FastAPI via REST API
+- **Deployment:** Both services are containerized with Docker and deployed to GCP Cloud Run
 
-## 🏗️ Setup & Installation
-
-### 1. Clone the repository
-```bash
-git clone <repo-url>
-cd PM
+**Diagram:**
 ```
-
-### 2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the application
-- **Streamlit Dashboard:**
-  ```bash
-  streamlit run Home.py
-  ```
-- **FastAPI Backend:**
-  ```bash
-  uvicorn main:app --reload
-  ```
-
-> By default, Streamlit runs on [localhost:8501](http://localhost:8501) and FastAPI on [localhost:8000](http://localhost:8000).
-
----
-
-## 🐳 Docker Deployment
-
-Build and run everything (Streamlit + FastAPI) in one container:
-
-```bash
-docker build -t predictive-maintenance .
-docker run -p 8501:8501 -p 8000:8000 predictive-maintenance
+User ──▶ Streamlit (Cloud Run) ──▶ FastAPI (Cloud Run) ──▶ ML Model
 ```
 
 ---
 
-## 🔗 API Usage
+## ⚙️ Setup & Deployment
 
-- **Endpoint:** `POST /predict`
-- **Request JSON:**
-  ```json
-  {
-    "air_temperature_K": 300.0,
-    "process_temperature_K": 310.0,
-    "rotational_speed_rpm": 1500,
-    "torque_Nm": 40.0,
-    "tool_wear_min": 100,
-    "type": "L"  // "L", "M", or "H"
-  }
-  ```
-- **Response:**
-  ```json
-  { "prediction": "No Failure" }
-  // or
-  { "prediction": "Failure Detected", "failure_type": "Overstrain Failure" }
-  ```
+**Quick Start:**
+- Visit the [Live Streamlit App](https://pm-streamlit-29369688553.us-central1.run.app/)
+- For local development or redeployment, see the full [GCP_DEPLOYMENT_GUIDE.md](./GCP_DEPLOYMENT_GUIDE.md)
+
+**Main Steps:**
+1. Write Dockerfiles for both FastAPI and Streamlit
+2. Build and push images to Google Container Registry
+3. Deploy each service to Cloud Run
+4. Set the FastAPI endpoint URL in the Streamlit code
 
 ---
 
-## 📊 Dashboard Pages
-- **Home:** Project intro, dataset, and failure mode explanations.
-- **EDA:** Data exploration, outlier detection, and feature analysis.
-- **Metrics:** Model performance comparison and classification reports.
-- **Prediction:** Input form for real-time predictions.
+## 🔗 API Usage Example
+
+**Endpoint:** `POST /predict` (FastAPI backend)
+
+**Sample Request:**
+```json
+{
+  "air_temperature_K": 300,
+  "process_temperature_K": 310,
+  "rotational_speed_rpm": 1500,
+  "torque_Nm": 40,
+  "tool_wear_min": 100,
+  "type": "L"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "prediction": "No Failure"
+}
+// or
+{
+  "prediction": "Failure Detected",
+  "failure_type": "Overstrain Failure"
+}
+```
 
 ---
 
-## ⚙️ Configuration
-- Streamlit settings: see `.streamlit/config.toml` (runs headless on port 8501).
-- No authentication or API keys required for local use.
+## 💸 Cost Monitoring & Best Practices
+- Set up [GCP Budgets & Alerts](https://console.cloud.google.com/billing/budgets) to avoid overspending
+- Monitor usage in [GCP Billing Reports](https://console.cloud.google.com/billing/reports)
+- Use the Cloud Run free tier as much as possible
+- Regularly clean up unused services and images
 
 ---
 
-## 📁 Notebooks
-- See `notebooks/` for data preprocessing, EDA, and model training workflows.
+## 🛠️ Troubleshooting
+- If the app fails to load, check Cloud Run logs for both services
+- Ensure all required files (models, data) are included in Docker images
+- Use only relative paths for file access in your code
+- If you update your code, always rebuild, push, and redeploy
+- For full deployment and troubleshooting steps, see [GCP_DEPLOYMENT_GUIDE.md](./GCP_DEPLOYMENT_GUIDE.md)
 
 ---
 
-## 📝 License
-MIT License (add your own if needed) 
+## 👤 Author
+- **Your Name**
+- [LinkedIn](#) | [GitHub](#)
+
+---
+
+**Enjoy exploring predictive maintenance with a modern, cloud-native ML stack!** 
