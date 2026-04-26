@@ -6,11 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from scipy.stats import ttest_ind
-import requests
-import matplotlib.pyplot as plt
-import joblib
-import sys
-import types
+from sklearn.preprocessing import MinMaxScaler
 
 # Model loading and utilities
 label_mapping = {
@@ -31,19 +27,24 @@ def ordinal_encoding(X):
 # Load models
 @st.cache_resource
 def load_models():
-    # Set up sys.modules for custom functions used in preprocessing
-    module_name = "__main__"
-    if module_name not in sys.modules:
-        sys.modules[module_name] = types.ModuleType(module_name)
-    setattr(sys.modules[module_name], "kelvin_to_celsius", kelvin_to_celsius)
-    setattr(sys.modules[module_name], "ordinal_encoding", ordinal_encoding)
+    # Load data to fit scaler
+    df = pd.read_csv('data/data.csv')
+    df['Air temperature [C]'] = df['Air temperature [K]'].apply(kelvin_to_celsius)
+    df['Process temperature [C]'] = df['Process temperature [K]'].apply(kelvin_to_celsius)
+    df['Type'] = ordinal_encoding(df['Type'])
+    df.drop(['UDI', 'Product ID', 'Air temperature [K]', 'Process temperature [K]'], axis=1, inplace=True)
+    # Drop failure columns if present
+    df.drop(['Machine failure', 'TWF', 'HDF', 'PWF', 'OSF', 'RNF'], axis=1, errors='ignore', inplace=True)
     
-    preprocessor = joblib.load("preprocessing.joblib")
+    numerical_cols = ['Air temperature [C]', 'Process temperature [C]', 'Rotational speed [rpm]', 'Torque [Nm]', 'Tool wear [min]', 'Type']
+    scaler = MinMaxScaler()
+    scaler.fit(df[numerical_cols])
+    
     model = joblib.load("model_failure.joblib")
     model2 = joblib.load("failure_type.joblib")
-    return preprocessor, model, model2
+    return scaler, model, model2
 
-preprocessor, model_failure, model_failure_type = load_models()
+scaler, model_failure, model_failure_type = load_models()
 
 # Set page configuration
 st.set_page_config(page_title="Predictive Maintenance Dashboard", layout="wide")
@@ -408,7 +409,15 @@ elif page == "Machine Failure Prediction":
                 "tool_wear_min": "Tool wear [min]",
                 "type": "Type"
             }, inplace=True)
-            processed_input = preprocessor.transform(df)
+            # Apply transformations
+            df['Air temperature [K]'] = df['Air temperature [K]'].apply(kelvin_to_celsius)
+            df['Process temperature [K]'] = df['Process temperature [K]'].apply(kelvin_to_celsius)
+            df.rename(columns={
+                "Air temperature [K]": "Air temperature [C]",
+                "Process temperature [K]": "Process temperature [C]",
+            }, inplace=True)
+            df['Type'] = ordinal_encoding(df['Type'])
+            processed_input = scaler.transform(df)
             failure_prediction = model_failure.predict(processed_input)[0]
             if failure_prediction == 0:
                 prediction = "No Failure"
