@@ -9,6 +9,8 @@ from scipy.stats import ttest_ind
 import requests
 import matplotlib.pyplot as plt
 import joblib
+import sys
+import types
 
 # Model loading and utilities
 label_mapping = {
@@ -29,6 +31,13 @@ def ordinal_encoding(X):
 # Load models
 @st.cache_resource
 def load_models():
+    # Set up sys.modules for custom functions used in preprocessing
+    module_name = "__main__"
+    if module_name not in sys.modules:
+        sys.modules[module_name] = types.ModuleType(module_name)
+    setattr(sys.modules[module_name], "kelvin_to_celsius", kelvin_to_celsius)
+    setattr(sys.modules[module_name], "ordinal_encoding", ordinal_encoding)
+    
     preprocessor = joblib.load("preprocessing.joblib")
     model = joblib.load("model_failure.joblib")
     model2 = joblib.load("failure_type.joblib")
